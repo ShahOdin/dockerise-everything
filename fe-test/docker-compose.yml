@@ -20,7 +20,7 @@ services:
   tests:
     build:
       dockerfile: ./Dockerfile
-    command: npm test
+    command: npm run test
     volumes:
       - .:/usr/tests/
       - /usr/tests/node_modules
