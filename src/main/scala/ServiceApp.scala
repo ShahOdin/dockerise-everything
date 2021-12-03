@@ -18,18 +18,20 @@ object ServiceApp extends IOApp.Simple {
     .withPort(port"8080")
     .build
 
-  def pingRoute[F[_]: Monad]: HttpRoutes[F] = {
+  def routes[F[_]: Monad]: HttpRoutes[F] = {
     val dsl = new Http4sDsl[F] {}
     import dsl._
 
     HttpRoutes.of[F] {
-      case (GET | HEAD) -> Root / "ping" =>
+      case (GET | HEAD) -> Root / "version" =>
         Ok(Version(1))
+      case (GET | HEAD) -> Root / "ping" =>
+        Ok()
     }
   }
 
   def create[F[_]: Async: Console]: Resource[F, Server] = for {
-    httpApp <- Resource.pure(pingRoute[F])
+    httpApp <- Resource.pure(routes[F])
     server <- serve(httpApp)
   } yield server
 
