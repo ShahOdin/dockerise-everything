@@ -1,0 +1,30 @@
+version: '3.8'
+
+networks:
+  development:
+    driver: bridge
+
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: ../Dockerfile
+    command: sbt run
+    image: sbt
+    ports:
+      - "8080:8080"
+    volumes:
+      - "../:/root/build"
+    networks:
+      - development
+  tests:
+    build:
+      dockerfile: ./Dockerfile
+    command: npm run test
+    volumes:
+      - .:/usr/tests/
+      - /usr/tests/node_modules
+    networks:
+      - development
+    depends_on:
+      - app
